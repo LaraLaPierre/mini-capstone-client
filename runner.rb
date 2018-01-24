@@ -42,9 +42,17 @@ elsif input_option == "3"
                           "http://localhost:3000/products",
                           parameters: client_params
                           )
-  product_data = response.body
 
-  puts JSON.pretty_generate(product_data)
+  if response.code == 200
+    product_data = response.body
+    puts JSON.pretty_generate(product_data)
+  else
+    errors = response.body["errors"]
+    errors.each do |error|
+      puts error
+    end
+  end
+
 elsif input_option == "4"
   print "Enter product id: "
   input_id = gets.chomp
@@ -72,9 +80,17 @@ elsif input_option == "4"
                           "http://localhost:3000/products/#{input_id}",
                           parameters: client_params
                           )
-  product_data = response.body
 
-  puts JSON.pretty_generate(product_data)
+  if response.code == 200
+    product_data = response.body
+    puts JSON.pretty_generate(product_data)
+  else
+    errors = response.body["errors"]
+    errors.each do |error|
+      puts error
+    end
+  end
+  
 elsif input_option == "5"
   print "Enter product id: "
   input_id = gets.chomp

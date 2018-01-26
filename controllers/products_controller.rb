@@ -1,8 +1,14 @@
 module ProductsController
   def products_index_action
     response = Unirest.get("http://localhost:3000/products")
-    products = response.body
-    puts JSON.pretty_generate(products)
+    product_hashs = response.body
+    products = []
+
+    product_hashs.each do |product_hash|
+      products << Product.new(product_hash)
+    end
+
+    products_index_view(products)
   end
 
   def products_show_action
@@ -10,8 +16,10 @@ module ProductsController
     input_id = gets.chomp
 
     response = Unirest.get("http://localhost:3000/products/#{input_id}")
-    product = response.body
-    puts JSON.pretty_generate(product)
+    product_hash = response.body
+    product = Product.new(product_hash)
+
+    products_show_view(product)
   end
 
   def products_create_action

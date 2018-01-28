@@ -11,4 +11,14 @@ class Product
     @price = input_options["price"]
     @formatted_price = input_options["formatted_price"]
   end
+
+  def self.convert_hashs(product_hashs)
+    collection = []
+
+    product_hashs.each do |product_hash|
+      collection << Product.new(product_hash)
+    end
+
+    collection
+  end
 end

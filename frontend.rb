@@ -1,5 +1,4 @@
 require 'unirest'
-
 require_relative 'controllers/products_controller'
 require_relative 'views/products_views'
 require_relative 'models/product'

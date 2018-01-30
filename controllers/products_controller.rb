@@ -17,17 +17,13 @@ module ProductsController
 
   def products_create_action
     client_params = products_new_form
-    response = Unirest.post(
-                            "http://localhost:3000/products",
-                            parameters: client_params
-                            )
+    json_data = post_request("/products", client_params)
 
-    if response.code == 200
-      product_hash = response.body
-      product = Product.new(product_hash)
+    if !json_data["errors"]
+      product = Product.new(json_data)
       products_show_view(product)
     else
-      errors = response.body["errors"]
+      errors = json_data["errors"]
       products_errors_view(errors)
     end
   end
@@ -38,17 +34,13 @@ module ProductsController
     product = Product.new(product_hash)
 
     client_params = products_update_form(product)
-    response = Unirest.patch(
-                            "http://localhost:3000/products/#{input_id}",
-                            parameters: client_params
-                            )
+    json_data = patch_request("/products/#{input_id}", client_params)
 
-    if response.code == 200
-      product_hash = response.body
-      product = Product.new(product_hash)
+    if !json_data["errors"]
+      product = Product.new(json_data)
       products_show_view(product)
     else
-      errors = response.body["errors"]
+      errors = json_data["errors"]
       products_errors_view(errors)
     end
   end
@@ -56,9 +48,8 @@ module ProductsController
   def products_destroy_action
     input_id = products_id_form
 
-    response = Unirest.delete("http://localhost:3000/products/#{input_id}")
-    data = response.body
-    puts data["message"]
+    json_data = delete_request("/products/#{input_id}")
+    puts json_data["message"]
   end
 
   def products_search_action

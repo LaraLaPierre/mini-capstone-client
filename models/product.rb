@@ -1,5 +1,5 @@
 class Product
-  attr_accessor :id, :name, :image_url, :description, :is_discounted, :price, :tax, :total, :formatted_price, :formatted_tax, :formatted_total, :supplier_name, :supplier_id
+  attr_accessor :id, :name, :image_url, :description, :is_discounted, :price, :tax, :total, :formatted_price, :formatted_tax, :formatted_total, :supplier_name, :supplier_id, :image_urls
   def initialize(input_options)
     @id = input_options["id"]
     @name = input_options["name"]
@@ -17,6 +17,8 @@ class Product
 
     @supplier_name = input_options["supplier"]["name"]
     @supplier_id = input_options["supplier"]["id"]
+
+    @image_urls = input_options["images"].map {|image_hash| image_hash["url"] }
   end
 
   def self.convert_hashs(product_hashs)

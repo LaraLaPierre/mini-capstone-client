@@ -21,6 +21,7 @@ class Frontend
     puts "    [3] Create a new product"
     puts "    [4] Update a product"
     puts "    [5] Destroy a product"
+    puts "    [6] Show all orders"
 
     input_option = gets.chomp
 
@@ -42,6 +43,9 @@ class Frontend
       products_update_action
     elsif input_option == "5"
       products_destroy_action
+    elsif input_option == "6"
+      orders_hashs = get_request("/orders")
+      puts JSON.pretty_generate(orders_hashs)
     end
   end
 

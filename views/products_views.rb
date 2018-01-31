@@ -19,6 +19,13 @@ module ProductsViews
     puts " " * MARGIN + Paint["-" * 40, '#CC00CC']
     puts " " * MARGIN + "Total".rjust(30) + product.formatted_total.rjust(10)
     puts
+
+    puts "Images"
+    product.image_urls.each do |image_url|
+      puts "    • #{image_url}"
+    end
+
+    puts
   end
 
   def products_index_view(products)

@@ -18,15 +18,18 @@ class Frontend
       puts "        [1.2] Sort products by price"
       puts "        [1.3] Sort products by name"
       puts "        [1.4] Sort products by description"
+      puts "        [1.5] Show products by category"
       puts "    [2] See one product"
       puts "    [3] Create a new product"
       puts "    [4] Update a product"
       puts "    [5] Destroy a product"
       puts "    [6] Show all orders"
+      puts "    [cart] Show shopping cart"
       puts
       puts "    [signup] Signup (create a user)"
       puts "    [login]  Login (create a JSON web token)"
       puts "    [logout] Logout (erase the JSON web token)"
+      puts "    [q] Quit"
 
       input_option = gets.chomp
 
@@ -40,6 +43,26 @@ class Frontend
         products_sort_action("name")
       elsif input_option == "1.4"
         products_sort_action("description")
+      elsif input_option == "1.5"
+        puts 
+        response = Unirest.get("http://localhost:3000/categories")
+        category_hashs = response.body
+        puts "Categories"
+        puts "-" * 40
+        category_hashs.each do |category_hash|
+          puts "- #{category_hash["name"]}"
+        end
+        puts
+
+        print "Enter a category name: "
+        category_name = gets.chomp
+        response = Unirest.get("http://localhost:3000/products?category=#{category_name}")
+        product_hashs = response.body
+
+        product_hashs.each do |product_hash|
+          puts "- #{product_hash["name"]}"
+        end
+
       elsif input_option == "2"
         products_show_action
       elsif input_option == "3"
@@ -49,8 +72,28 @@ class Frontend
       elsif input_option == "5"
         products_destroy_action
       elsif input_option == "6"
-        orders_hashs = get_request("/orders")
-        puts JSON.pretty_generate(orders_hashs)
+        response = Unirest.get("http://localhost:3000/orders")
+        if response.code == 200
+          puts JSON.pretty_generate(response.body)
+        elsif response.code == 401
+          puts "You don't have a list of orders until you sign in, Jerk"
+        end
+      elsif input_option == "cart"
+        puts
+        puts "Here are all the items in your shopping cart"
+        puts
+        response = Unirest.get("http://localhost:3000/carted_products")
+        carted_products = response.body
+        puts JSON.pretty_generate(carted_products)
+
+        puts "Press enter to continue, or press 'o' to place the order"
+        puts ""
+
+        if gets.chomp == 'o'
+          response = Unirest.post('http://localhost:3000/orders')
+          order_hash = response.body
+          puts JSON.pretty_generate(order_hash)
+        end
       elsif input_option == "signup"
         puts "Signup!"
         puts
@@ -102,7 +145,7 @@ class Frontend
 
 private
   def get_request(url, client_params={})
-    Unirest.get("http://localhost:3000#{url}", parameters: client_params).body
+    c", parameters: client_params).body
   end
 
   def post_request(url, client_params={})
